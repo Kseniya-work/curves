@@ -1,10 +1,15 @@
-#include <algorithm>
-#include <curve_test/src/Curve/BasicCurve.h>
 #define _USE_MATH_DEFINES
+
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <math.h>
 #include <numeric>
 #include <vector>
+
+#include <curve_test/src/Curve/BasicCurve.h>
+
 
 int main() {
 	//typedef typename curve::Point Pnt;
@@ -12,9 +17,10 @@ int main() {
 
 	try
 	{
-		std::size_t randNumOfCurve = 10;
-
-		std::cout << randNumOfCurve << std::endl;
+		srand((unsigned)time(0));
+		std::size_t randNumOfCurve = (rand() % 10) + 1;
+		
+		std::cout << "random number of curves = " << randNumOfCurve << std::endl;
 
 		//curve::BasicCurve* curve = new curve::Circle();
 		//curve::Point pnt;
@@ -34,50 +40,65 @@ int main() {
 		//delete curve;
 		//delete curve1;
 
-		curve::Circle c1 = curve::Circle(2.);
-		curve::Circle c2 = curve::Circle(5.);
-		curve::Ellipse c3 = curve::Ellipse();
-		curve::Circle c4 = curve::Circle();
+		//Populate a container curves created in random manner with random parameters
+		std::vector<std::shared_ptr<curve::BasicCurve>> curves;
 
-		//vector of curves pointers
-		std::vector<curve::BasicCurve*> curves;
+		enum CurveType { Circle, Ellipse, Helix };
+		double paramMin = 0.1;
+		double paramMax = 10.;
 
-		curves.push_back(&c1);
-		curves.push_back(&c2);
-		curves.push_back(&c3);
-		curves.push_back(&c4);
+		for (std::size_t i = 0; i < randNumOfCurve; i++)
+		{
+			CurveType curveType = CurveType(rand() % 3);
+
+			switch (curveType)
+			{
+			case Circle:
+				{
+				double r = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
+				curves.emplace_back(std::make_shared<curve::Circle>(r));
+				}
+				break;
+			case Ellipse:
+				{
+				double r1 = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
+				double r2 = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
+				curves.emplace_back(std::make_shared <curve::Ellipse>(r1, r2));
+				}
+				break;
+			case Helix:
+				{
+				double  r = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
+				double st = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
+				curves.emplace_back(std::make_shared<curve::Ellipse>(r, st));//TODO
+				}
+				break;
+			default:
+				break;
+			}
+		}
 
 		//Populate a second container that would contain only circles
-		std::vector<curve::BasicCurve*> circles;
-
-		std::copy_if(curves.begin(), curves.end(),
-			std::back_inserter(circles),
-			[](curve::BasicCurve* ptrCur) {
-				curve::Circle* ptrCirc = dynamic_cast<curve::Circle*>(ptrCur);
-				return ptrCirc != nullptr;
-			});
-
-
-		//Populate a second container that would contain only circles
-		std::vector<curve::Circle*> circles1;
+		std::vector<std::shared_ptr<curve::Circle>> circles;
 
 		std::for_each(curves.begin(), curves.end(),
-			[&circles1](curve::BasicCurve* ptrCur) {
-				curve::Circle* ptrCirc = dynamic_cast<curve::Circle*>(ptrCur);
-				if (ptrCirc != nullptr) circles1.push_back(ptrCirc);
+			[&circles](auto& ptrCur) {
+				auto ptrCirc = std::dynamic_pointer_cast<curve::Circle>(ptrCur);
+				if (ptrCirc != nullptr)
+					circles.emplace_back(ptrCirc);
 			});
 
 		//Sort the second container in the ascending order of circles’ radii
-		std::sort(circles1.begin(), circles1.end(),
-			[](curve::Circle* ptrL, curve::Circle* ptrR) {
-				return *ptrL < *ptrR;
+		std::sort(circles.begin(), circles.end(),
+			[](auto& ptrL, auto& ptrR) {
+				return *ptrL.get() < *ptrR.get();
 			});
 
 		//Compute the total sum of radii of all curves in the second container
-		double sumR = std::accumulate(circles1.begin(), circles1.end(),
+		double sumR = std::accumulate(circles.begin(), circles.end(),
 			0.,
-			[](double sumR, curve::Circle* ptrCirc) {
-				return sumR + ptrCirc->getR();
+			[](double sumR, auto& ptrCirc) {
+				return sumR + ptrCirc.get()->getR();
 			});
 
 		std::cout << "sumR = " << sumR << std::endl;
