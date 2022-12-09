@@ -1,11 +1,9 @@
-#define _USE_MATH_DEFINES
-
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <math.h>
 #include <numeric>
+#include <sstream>
 #include <vector>
 
 #include <curve_test/src/Curve/BasicCurve.h>
@@ -21,24 +19,7 @@ int main() {
 		std::size_t randNumOfCurve = (rand() % 10) + 1;
 		
 		std::cout << "random number of curves = " << randNumOfCurve << std::endl;
-
-		//curve::BasicCurve* curve = new curve::Circle();
-		//curve::Point pnt;
-		//curve::Vector der;
-		//curve->getPnt(pnt, M_PI / 4.);
-		//curve->getDer(der, M_PI / 4.);
-		//
-		//std::cout << pnt.getX() << " " << pnt.getY() << " " << pnt.getZ() << std::endl;
-		//std::cout << der.getX() << " " << der.getY() << " " << der.getZ() << std::endl;
-		//
-		//curve::BasicCurve* curve1 = new curve::Ellipse();
-		//curve1->getPnt(pnt);
-		//curve1->getDer(der);
-		//
-		//std::cout << pnt.getX() << " " << pnt.getY() << " " << pnt.getZ() << std::endl;
-		//std::cout << der.getX() << " " << der.getY() << " " << der.getZ() << std::endl;
-		//delete curve;
-		//delete curve1;
+		std::cout << std::endl;
 
 		//Populate a container curves created in random manner with random parameters
 		std::vector<std::shared_ptr<curve::BasicCurve>> curves;
@@ -70,12 +51,28 @@ int main() {
 				{
 				double  r = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
 				double st = paramMin + ((double)rand() / RAND_MAX) * (paramMax - paramMin);
-				curves.emplace_back(std::make_shared<curve::Ellipse>(r, st));//TODO
+				curves.emplace_back(std::make_shared<curve::Helix>(r, st));
 				}
 				break;
 			default:
 				break;
 			}
+		}
+
+		//Print coordinates of points and derivatives of all curves in the container at t = PI / 4
+		double t = M_PI / 4.;
+		std::cout << "t = " << t << std::endl;
+		
+		curve::Point pnt;
+		curve::Vector der;
+
+		for(const auto& ptrCur : curves) {
+			ptrCur->getPnt(pnt, t);
+			ptrCur->getDer(der, t);
+
+			std::cout << "x(t) = " << pnt.getX() << ", y(t) = " << pnt.getY() << ", z(t) = " << pnt.getZ() << std::endl;
+			std::cout << "x'(t) = " << der.getX() << ", y'(t) = " << der.getY() << ", z'(t) = " << der.getZ() << std::endl;
+			std::cout << std::endl;
 		}
 
 		//Populate a second container that would contain only circles

@@ -19,6 +19,7 @@ message("include_directories: " ${PROJECT_SOURCE_DIR})
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Curve/Circle.cpp
     ${PROJECT_SOURCE_DIR}/src/Curve/Ellipse.cpp
+    ${PROJECT_SOURCE_DIR}/src/Curve/Helix.cpp
 )
 
 set(TEST_SOURCES

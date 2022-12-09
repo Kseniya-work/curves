@@ -50,8 +50,8 @@ void Ellipse::setR2(const double theR)
 
 bool Ellipse::getPnt(Point& thePnt, const double theT) const
 {
-	thePnt.setX(myXc + myR1 * cos(theT));//TODO
-	thePnt.setY(myYc + myR1 * sin(theT));
+	thePnt.setX(myXc + myR1 * cos(theT));
+	thePnt.setY(myYc + myR2 * sin(theT));
 	thePnt.setZ(0.);
 
 	return true;
@@ -59,8 +59,8 @@ bool Ellipse::getPnt(Point& thePnt, const double theT) const
 
 bool Ellipse::getDer(Vector& theDer, const double theT) const
 {
-	theDer.setX(-myR1 * sin(theT));//TODO
-	theDer.setY( myR1 * cos(theT));
+	theDer.setX(-myR1 * sin(theT));
+	theDer.setY( myR2 * cos(theT));
 	theDer.setZ(0.);
 
 	return true;

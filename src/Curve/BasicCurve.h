@@ -1,4 +1,7 @@
-#include <iostream>//TODO
+#pragma once 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 namespace curve {
 
 struct Point {
@@ -59,7 +62,7 @@ private:
 class BasicCurve {
 
 public:
-	virtual ~BasicCurve() { std::cout << "~BasicCurve"; }; //TODO
+	virtual ~BasicCurve() {};
 
 	virtual bool getPnt(Point& thePnt,
 						const double theT = 0.0) const = 0;
@@ -74,7 +77,7 @@ public:
 					const double theXc = 0.,
 					const double theYc = 0.);
 
-	~Circle() { std::cout << "~Circle"; } //TODO
+	~Circle() {}
 
 	void setR(const double theR);
 	double getR() const { return myR; }
@@ -93,12 +96,12 @@ private:
 class Ellipse : public BasicCurve
 {
 public:
-	explicit Ellipse(const double theR1 = 1.,
-					 const double theR2 = 2.,
+	explicit Ellipse(const double theR1 = 2.,
+					 const double theR2 = 1.,
 					 const double theXc = 0.,
 					 const double theYc = 0.);
 
-	~Ellipse() { std::cout << "~Ellipse"; } //TODO
+	~Ellipse() {}
 
 	void setR1(const double theR);
 	void setR2(const double theR);
@@ -112,6 +115,32 @@ public:
 private:
 	double myR1;
 	double myR2;
+	double myXc;
+	double myYc;
+};
+
+class Helix : public BasicCurve
+{
+public:
+	explicit Helix(const double theR  = 1.,
+				   const double theSt = 1.,
+				   const double theXc = 0.,
+				   const double theYc = 0.);
+
+	~Helix() {}
+
+	void setR(const double theR);
+	void setSt(const double theSt);
+
+	double getR() const { return myR; }
+	double getSt() const { return mySt; }
+
+	bool getPnt(Point&  thePnt, const double theT = 0.0) const override;
+	bool getDer(Vector& theDer, const double theT = 0.0) const override;
+
+private:
+	double myR;
+	double mySt;
 	double myXc;
 	double myYc;
 };
