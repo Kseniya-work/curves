@@ -15,7 +15,7 @@ Circle::Circle(const double theR,
 		throw std::invalid_argument(
 			std::string(
 				std::string("Circle::Circle : ") +
-				std::string("radii must be positive")
+				std::string("radius must be positive")
 			).c_str());
 	}
 }
@@ -26,7 +26,7 @@ void Circle::setR(const double theR)
 		throw std::invalid_argument(
 			std::string(
 				std::string("Circle::setR : ") +
-				std::string("radii must be positive")
+				std::string("radius must be positive")
 			).c_str());
 	}
 
@@ -51,4 +51,8 @@ bool Circle::getDer(Vector& theDer, const double theT) const
 	return true;
 }
 
+bool Circle::operator<(const Circle& theOther) const
+{
+	return this->getR() < theOther.getR() ? true : false;
+}
 } //namespace curve
